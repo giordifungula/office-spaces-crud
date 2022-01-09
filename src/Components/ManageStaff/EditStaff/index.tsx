@@ -100,8 +100,7 @@ const EditStaffModal = ({ open, handleClose, staff }: IEditStaffModalProps) => {
 		if (staff) {
 			reset(staff);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [JSON.stringify(staff)]);
 
 	return (
 		<div>

@@ -25,18 +25,26 @@ import { IStaffRead, IOfficeRead, DB } from 'DB/db.store';
 import { OfficeHeadings } from 'utilities/globals';
 // @components
 import ManageOfficeView from 'Components/Utilities/ManageOfficeView';
+import StaffList from 'Components/ManageStaff/StaffList';
 import useStyles from '../styles';
 
 interface IOfficePageProps {
 	heading: OfficeHeadings;
 }
 
+interface ISearchStaffInput {
+	searchStaff: string;
+}
+
+const schema = yup.object().shape({
+	searchStaff: yup.string().required(),
+});
+
 const ViewOffice = ({ heading }: IOfficePageProps) => {
 	const classes = useStyles({});
 
 	const params = useParams();
 	const navigate = useNavigate();
-
 	const officeId = params.id as string;
 
 	const fetchStaffs = useLiveQuery(() => DB.staffs.toArray(), []);
@@ -45,6 +53,18 @@ const ViewOffice = ({ heading }: IOfficePageProps) => {
 		() => DB.offices.toArray(),
 		[],
 	) as IOfficeRead[];
+
+	const theme = useTheme();
+	const largerScreen = useMediaQuery(theme.breakpoints.up('lg'));
+	const mediumScreen = useMediaQuery(theme.breakpoints.up('md'));
+
+	const {
+		control,
+		watch,
+		formState: { errors },
+	} = useForm<ISearchStaffInput>({
+		resolver: yupResolver(schema),
+	});
 
 	const [office, setFindOffice] = React.useState<IOfficeRead | null>(null);
 	const [expanded, setExpanded] = React.useState(false);
@@ -57,6 +77,8 @@ const ViewOffice = ({ heading }: IOfficePageProps) => {
 	const [officeStaffMembers, setOfficeStaffMembers] = React.useState<
 		IStaffRead[] | undefined
 	>(officeUsers);
+
+	const searchStaff = watch('searchStaff');
 
 	const handleExpandClick = () => {
 		setExpanded(!expanded);
@@ -87,6 +109,36 @@ const ViewOffice = ({ heading }: IOfficePageProps) => {
 			  ).length
 			: 0;
 	};
+
+	React.useEffect(() => {
+		if (searchStaff) {
+			if (searchStaff !== '' && officeStaffMembers) {
+				const searchingStaffMembers = officeStaffMembers
+					? officeStaffMembers.filter((item) => {
+							return Object.values(item)
+								.join('')
+								.toLowerCase()
+								.includes(searchStaff.toLowerCase());
+					  })
+					: [];
+				setOfficeStaffMembers(searchingStaffMembers);
+
+				if (officeStaffMembers.length === 0) {
+					const getBackStaff = officeUsers.filter((item) => {
+						return Object.values(item)
+							.join('')
+							.toLowerCase()
+							.includes(searchStaff.toLowerCase());
+					});
+					if (getBackStaff.length > 0) {
+						setOfficeStaffMembers(getBackStaff);
+					}
+				}
+			}
+		} else {
+			setOfficeStaffMembers(officeUsers);
+		}
+	}, [searchStaff, JSON.stringify(officeStaffMembers)]);
 
 	return (
 		<>
@@ -280,6 +332,108 @@ const ViewOffice = ({ heading }: IOfficePageProps) => {
 						</Grid>
 					</Grid>
 				) : null}
+				<Grid
+					item
+					container
+					spacing={2}
+					className={`${classes.gridSpacingTop} ${classes.gridMaxWidthAuto}`}
+				>
+					<Grid
+						item
+						xs={12}
+						style={{ marginBottom: '20px' }}
+						className={classes.searchGridSection}
+					>
+						<Controller
+							control={control}
+							name="searchStaff"
+							render={({ ...props }) => (
+								<TextField
+									{...props.field}
+									label="Search"
+									className={classes.textLabelGrey}
+									variant="outlined"
+									InputProps={{
+										classes: {
+											notchedOutline:
+												classes.outlinedInputBorderLight,
+										},
+										endAdornment: (
+											<InputAdornment position="end">
+												<IconButton color="secondary">
+													<Search />
+												</IconButton>
+											</InputAdornment>
+										),
+									}}
+									type="text"
+									fullWidth
+									error={Boolean(errors?.searchStaff)}
+									helperText={errors?.searchStaff?.message}
+								/>
+							)}
+						/>
+					</Grid>
+					<Grid
+						item
+						container
+						xs={12}
+						className={classes.gridStaffStyles}
+					>
+						<Grid item xs={11}>
+							<Typography
+								variant="h4"
+								className={classes.staffMembersHeading}
+							>
+								Staff Members in Office
+							</Typography>
+						</Grid>
+						{office ? (
+							<Grid item xs={1}>
+								<div
+									style={{
+										marginLeft: largerScreen
+											? '65%'
+											: mediumScreen
+											? '40%'
+											: '',
+									}}
+								>
+									<Typography
+										variant="body1"
+										className={classes.staffNumberText}
+										style={{
+											textAlign: mediumScreen
+												? 'left'
+												: 'center',
+										}}
+									>
+										{briefSummaryOnOffice(office)}
+									</Typography>
+								</div>
+							</Grid>
+						) : null}
+
+						<Grid item xs={12}>
+							<Grid container className={classes.root}>
+								{officeStaffMembers
+									? officeStaffMembers.map((staff) => (
+											<StaffList
+												staff={staff}
+												key={staff.id}
+											/>
+									  ))
+									: null}
+								{officeStaffMembers?.length === 0 ? (
+									<Typography variant="h5">
+										There are currently no users. Click on
+										the button below to add new users.
+									</Typography>
+								) : null}
+							</Grid>
+						</Grid>
+					</Grid>
+				</Grid>
 			</ManageOfficeView>
 		</>
 	);

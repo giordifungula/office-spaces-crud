@@ -9,12 +9,6 @@ import { DB } from 'DB/db.store';
 import Office from '../Office';
 import useStyles from './styles';
 
-interface ILandingPageProps {
-	goToEditPage: () => void;
-	setSelectedOffice: React.Dispatch<React.SetStateAction<number | null>>;
-	goToOfficePage: () => void;
-}
-
 const LandingPage = () => {
 	const classes = useStyles({});
 	const fetchOffices = useLiveQuery(() => DB.offices.toArray(), []);
@@ -35,6 +29,7 @@ const LandingPage = () => {
 					variant="h4"
 					color="secondary"
 					className={classes.topSpacingText}
+					align="center"
 				>
 					All Offices
 				</Typography>
@@ -46,7 +41,6 @@ const LandingPage = () => {
 								<Office
 									office={office}
 									goToEditPage={goToEditPage}
-									// setSelectedOffice={setSelectedOffice}
 									goToOfficePage={goToOfficePage}
 									key={office.id}
 								/>

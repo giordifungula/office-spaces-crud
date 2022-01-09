@@ -58,10 +58,6 @@ const Office = ({
 	const [expanded, setExpanded] = React.useState(false);
 	const fetchStaffs = useLiveQuery(() => DB.staffs.toArray(), []);
 
-	const theme = useTheme();
-	const largerScreen = useMediaQuery(theme.breakpoints.up('lg'));
-	const mediumScreen = useMediaQuery(theme.breakpoints.up('md'));
-
 	const officeUsers = fetchStaffs
 		? fetchStaffs.filter((user) => user.officeId === Number(office.id))
 		: [];
@@ -70,30 +66,13 @@ const Office = ({
 		IStaffRead[] | undefined
 	>(officeUsers);
 
-	const {
-		control,
-		watch,
-		formState: { errors },
-	} = useForm<ISearchStaffInput>({
-		resolver: yupResolver(schema),
-	});
-
 	const handleExpandClick = () => {
 		setExpanded(!expanded);
 	};
 
-	const handleEditClicked = (id: number) => {
-		// setSelectedOffice(id);
-		// goToEditPage();
-	};
-
 	const handleOfficeClicked = (id: string) => {
-		// if (view === PageViews.office) return; TODO check if the office page is active
-		// setSelectedOffice(id);
 		goToOfficePage ? goToOfficePage(id) : null;
 	};
-
-	const searchStaff = watch('searchStaff');
 
 	const briefSummaryOnOffice = (currentOffice: IOfficeRead) => {
 		return officeStaffMembers
@@ -112,39 +91,8 @@ const Office = ({
 		}
 	}, [JSON.stringify(fetchStaffs)]);
 
-	React.useEffect(() => {
-		if (searchStaff) {
-			if (searchStaff !== '' && officeStaffMembers) {
-				const searchingStaffMembers = officeStaffMembers
-					? officeStaffMembers.filter((item) => {
-							return Object.values(item)
-								.join('')
-								.toLowerCase()
-								.includes(searchStaff.toLowerCase());
-					  })
-					: [];
-				setOfficeStaffMembers(searchingStaffMembers);
-
-				if (officeStaffMembers.length === 0) {
-					const getBackStaff = officeUsers.filter((item) => {
-						return Object.values(item)
-							.join('')
-							.toLowerCase()
-							.includes(searchStaff.toLowerCase());
-					});
-					if (getBackStaff.length > 0) {
-						setOfficeStaffMembers(getBackStaff);
-					}
-				}
-			}
-		} else {
-			setOfficeStaffMembers(officeUsers);
-		}
-	}, [searchStaff, JSON.stringify(officeStaffMembers)]);
-
 	return (
 		<>
-			{/* <ManageOfficeView heading={heading} goBack={goBack} /> */}
 			<Grid
 				container
 				className={classes.officeBorderedGrid}
@@ -304,107 +252,6 @@ const Office = ({
 					</Grid>
 				</Grid>
 			</Grid>
-			{/* {view && view === PageViews.office ? (
-				<Grid
-					item
-					container
-					spacing={2}
-					className={classes.gridSpacingTop}
-				>
-					<Grid
-						item
-						xs={12}
-						style={{ marginBottom: '20px' }}
-						className={classes.searchGridSection}
-					>
-						<Controller
-							control={control}
-							name="searchStaff"
-							render={({ ...props }) => (
-								<TextField
-									{...props.field}
-									label="Search"
-									className={classes.textLabelGrey}
-									variant="outlined"
-									InputProps={{
-										classes: {
-											notchedOutline:
-												classes.outlinedInputBorderLight,
-										},
-										endAdornment: (
-											<InputAdornment position="end">
-												<IconButton color="secondary">
-													<Search />
-												</IconButton>
-											</InputAdornment>
-										),
-									}}
-									type="text"
-									fullWidth
-									error={Boolean(errors?.searchStaff)}
-									helperText={errors?.searchStaff?.message}
-								/>
-							)}
-						/>
-					</Grid>
-					<Grid
-						item
-						container
-						xs={12}
-						className={classes.gridStaffStyles}
-					>
-						<Grid item xs={11}>
-							<Typography
-								variant="h4"
-								className={classes.staffMembersHeading}
-							>
-								Staff Members in Office
-							</Typography>
-						</Grid>
-						<Grid item xs={1}>
-							<div
-								style={{
-									marginLeft: largerScreen
-										? '65%'
-										: mediumScreen
-										? '40%'
-										: '',
-								}}
-							>
-								<Typography
-									variant="body1"
-									className={classes.staffNumberText}
-									style={{
-										textAlign: mediumScreen
-											? 'left'
-											: 'center',
-									}}
-								>
-									{briefSummaryOnOffice(office)}
-								</Typography>
-							</div>
-						</Grid>
-						<Grid item xs={12}>
-							<Grid container className={classes.root}>
-								{officeStaffMembers
-									? officeStaffMembers.map((staff) => (
-											<StaffList
-												staff={staff}
-												key={staff.id}
-											/>
-									  ))
-									: null}
-								{officeStaffMembers?.length === 0 ? (
-									<Typography variant="h5">
-										There are currently no users. Click on
-										the button below to add new users.
-									</Typography>
-								) : null}
-							</Grid>
-						</Grid>
-					</Grid>
-				</Grid>
-			) : null} */}
 		</>
 	);
 };
