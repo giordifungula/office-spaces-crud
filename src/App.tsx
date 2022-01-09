@@ -5,6 +5,7 @@ import AddOffice from 'Components/ManageOffice/AddOffice';
 import EditOffice from 'Components/ManageOffice/EditOffice';
 import LandingPage from 'Components/Home';
 import Office from 'Components/Office';
+import ViewOffice from 'Components/Office/Page';
 
 function Dashboard() {
 	return <h1>Dashboard</h1>;
@@ -26,7 +27,7 @@ function App() {
 				/>
 				<Route
 					path="/office/:id"
-					element={<Office heading="Office" />}
+					element={<ViewOffice heading="Office" />}
 				/>
 			</Route>
 		</Routes>

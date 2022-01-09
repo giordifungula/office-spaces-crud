@@ -90,7 +90,7 @@ const Office = ({
 	const handleOfficeClicked = (id: string) => {
 		// if (view === PageViews.office) return; TODO check if the office page is active
 		// setSelectedOffice(id);
-		goToOfficePage(id);
+		goToOfficePage ? goToOfficePage(id) : null;
 	};
 
 	const searchStaff = watch('searchStaff');
@@ -110,7 +110,6 @@ const Office = ({
 			);
 			setOfficeStaffMembers(filterOfficeUsers);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [JSON.stringify(fetchStaffs)]);
 
 	React.useEffect(() => {
@@ -141,7 +140,6 @@ const Office = ({
 		} else {
 			setOfficeStaffMembers(officeUsers);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [searchStaff, JSON.stringify(officeStaffMembers)]);
 
 	return (
@@ -173,17 +171,8 @@ const Office = ({
 							{office.officeName}
 						</Typography>
 					</Grid>
-					<Grid item xs={2}>
-						<IconButton
-							onClick={() => handleEditClicked(Number(office.id))}
-						>
-							<img
-								src="https://user-images.githubusercontent.com/27930281/133586830-9a4e8a83-6571-4331-8291-246313cb8a51.png"
-								width="30"
-								alt="groupIcon"
-							/>
-						</IconButton>
-					</Grid>
+					<Grid item xs={2} />
+
 					<Grid item xs={2}>
 						<IconButton className={classes.itemIconSpace}>
 							<img
