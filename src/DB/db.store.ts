@@ -26,7 +26,7 @@ interface IStaffCreate {
 }
 
 export class OfficeKeeperDB extends Dexie {
-	offices!: Dexie.Table<IOfficeRead, number>;
+	offices!: Dexie.Table<IOfficeRead>;
 	staffs!: Dexie.Table<IStaffRead, number>;
 
 	constructor() {
@@ -36,7 +36,7 @@ export class OfficeKeeperDB extends Dexie {
 				'++id,officeName,physicalAddress,emailAddress,phoneNumber,capacity,officeColor',
 			staffs: '++id,firstName,lastName,avatar,officeId',
 		});
-		// this.offices = this.table('offices');
+		this.offices = this.table('offices');
 		// this.staffs = this.table('staffs');
 	}
 }
