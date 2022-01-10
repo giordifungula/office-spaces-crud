@@ -11,22 +11,16 @@ import {
 	Button,
 	Collapse,
 	IconButton,
-	InputAdornment,
-	TextField,
-	useMediaQuery,
-	useTheme,
 } from '@material-ui/core';
 // @icons
-import { ExpandMore, ExpandLess, Search } from '@material-ui/icons';
+import { ExpandMore, ExpandLess } from '@material-ui/icons';
 // @api
 import { IStaffRead, IOfficeRead, DB } from 'DB/db.store';
 // @utilities
 import { OfficeHeadings } from 'utilities/globals';
 // @components
-import ManageOfficeView from 'Components/Utilities/ManageOfficeView';
 // @local
 import useStyles from './styles';
-import StaffList from '../ManageStaff/StaffList';
 
 interface IOfficeProps extends React.Attributes {
 	office: IOfficeRead;
@@ -36,14 +30,6 @@ interface IOfficeProps extends React.Attributes {
 	heading?: OfficeHeadings;
 	goBack?: () => void;
 }
-
-interface ISearchStaffInput {
-	searchStaff: string;
-}
-
-const schema = yup.object().shape({
-	searchStaff: yup.string().required(),
-});
 
 const Office = ({
 	office,

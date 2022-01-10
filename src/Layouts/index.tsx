@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 // @material-ui
 import { Fab } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
@@ -8,15 +8,11 @@ import useStyles from './styles';
 
 const Layout = () => {
 	const classes = useStyles();
-	const hideAddButtonViews = ['/new-office', '/edit-office'];
+	const hideAddButtonViews = ['/new-office', '/edit-office', '/add-staff'];
 	const location = useLocation();
 	const hideAddButtonRoutes = hideAddButtonViews.includes(location.pathname);
 
 	const navigate = useNavigate();
-	const params = useParams();
-
-	const officeId = params.officeId as string;
-	console.log('officeId', params);
 
 	const handlePageChange = () => {
 		switch (location.pathname) {
@@ -24,12 +20,8 @@ const Layout = () => {
 				navigate('/new-office');
 				break;
 
-			case '/office/':
-				navigate('/add-staff');
-				break;
 			default:
-				console.log('location', officeId);
-				navigate(`/add-staff/officeId=${officeId}`);
+				navigate(`/add-staff`);
 		}
 	};
 

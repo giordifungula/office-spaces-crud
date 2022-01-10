@@ -18,7 +18,7 @@ function App() {
 				<Route index element={<LandingPage />} />
 				<Route path="/dashboard" element={<Dashboard />} />
 				<Route
-					path="/add-staff"
+					path="add-staff"
 					element={<ViewOffice heading="Office" />}
 				>
 					<Route path=":officeId" element={<Dashboard />} />

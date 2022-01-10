@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 // @form
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -26,6 +26,7 @@ import { OfficeHeadings } from 'utilities/globals';
 // @components
 import ManageOfficeView from 'Components/Utilities/ManageOfficeView';
 import StaffList from 'Components/ManageStaff/StaffList';
+import AddStaffModal from 'Components/ManageStaff/AddStaff';
 import useStyles from '../styles';
 
 interface IOfficePageProps {
@@ -48,6 +49,17 @@ const ViewOffice = ({ heading }: IOfficePageProps) => {
 	const officeId = params.id as string;
 
 	const fetchStaffs = useLiveQuery(() => DB.staffs.toArray(), []);
+
+	const location = useLocation();
+	const locationIncludesAddStaff = location.pathname.includes('add-staff');
+
+	const [openAddStaff, setOpenAddStaff] = React.useState(false);
+
+	React.useEffect(() => {
+		if (locationIncludesAddStaff) {
+			setOpenAddStaff(true);
+		}
+	}, [locationIncludesAddStaff]);
 
 	const fetchOffices = useLiveQuery(
 		() => DB.offices.toArray(),
@@ -111,6 +123,16 @@ const ViewOffice = ({ heading }: IOfficePageProps) => {
 	};
 
 	React.useEffect(() => {
+		if (office && fetchStaffs) {
+			setOfficeStaffMembers(
+				fetchStaffs.filter(
+					(user) => user.officeId === Number(office.id),
+				),
+			);
+		}
+	}, [JSON.stringify(office), JSON.stringify(fetchStaffs)]);
+
+	React.useEffect(() => {
 		if (searchStaff) {
 			if (searchStaff !== '' && officeStaffMembers) {
 				const searchingStaffMembers = officeStaffMembers
@@ -139,6 +161,10 @@ const ViewOffice = ({ heading }: IOfficePageProps) => {
 			setOfficeStaffMembers(officeUsers);
 		}
 	}, [searchStaff, JSON.stringify(officeStaffMembers)]);
+
+	const handleCloseAddStaff = () => {
+		setOpenAddStaff(false);
+	};
 
 	return (
 		<>
@@ -434,6 +460,13 @@ const ViewOffice = ({ heading }: IOfficePageProps) => {
 						</Grid>
 					</Grid>
 				</Grid>
+				{openAddStaff && office ? (
+					<AddStaffModal
+						open={openAddStaff}
+						office={office}
+						handleClose={handleCloseAddStaff}
+					/>
+				) : null}
 			</ManageOfficeView>
 		</>
 	);
