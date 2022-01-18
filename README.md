@@ -47,7 +47,7 @@ https://giordi-office-spaces-crud.vercel.app/
 -   Material UI
 -   Typescript
 -   Dexie (a light-weight wrapper on top of indexedDB)
--       React Router
+-   React Router
 
 # By:
 
