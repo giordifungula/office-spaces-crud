@@ -20,6 +20,12 @@ module.exports = {
 	plugins: ['@typescript-eslint', 'prettier', 'import'],
 	rules: {
 		'@typescript-eslint/interface-name-prefix': 'off',
+
+		'no-unused-vars': [
+			0,
+			{ vars: 'all', args: 'after-used', ignoreRestSiblings: false },
+		],
+
 		'@typescript-eslint/naming-convention': [
 			'error',
 			{

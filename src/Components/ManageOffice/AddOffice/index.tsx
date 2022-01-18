@@ -58,6 +58,7 @@ const AddOfice = ({ heading }: IAddOfficeProps) => {
 		if (selectedColor) {
 			await DB.offices.add({ ...data, officeColor: selectedColor });
 			toast.success('Office has been added');
+			goBack();
 		} else {
 			toast.error('Please select a color');
 		}

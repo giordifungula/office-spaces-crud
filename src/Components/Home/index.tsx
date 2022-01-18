@@ -18,10 +18,6 @@ const LandingPage = () => {
 		navigate(`/office/${id}`);
 	};
 
-	const goToEditPage = (officeId: string) => {
-		navigate(`/edit-office/${officeId}`);
-	};
-
 	return (
 		<Grid container>
 			<Grid item xs={12}>
@@ -40,7 +36,6 @@ const LandingPage = () => {
 							office.id ? (
 								<Office
 									office={office}
-									goToEditPage={goToEditPage}
 									goToOfficePage={goToOfficePage}
 									key={office.id}
 								/>

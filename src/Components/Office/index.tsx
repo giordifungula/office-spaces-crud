@@ -1,9 +1,5 @@
 import React from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-// @form
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 // @material-ui
 import {
 	Typography,
@@ -16,29 +12,15 @@ import {
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 // @api
 import { IStaffRead, IOfficeRead, DB } from 'DB/db.store';
-// @utilities
-import { OfficeHeadings } from 'utilities/globals';
-// @components
 // @local
 import useStyles from './styles';
 
 interface IOfficeProps extends React.Attributes {
 	office: IOfficeRead;
-	goToEditPage?: (officeId: string) => void;
 	goToOfficePage?: (officeId: string) => void;
-	setSelectedOffice?: React.Dispatch<React.SetStateAction<number | null>>;
-	heading?: OfficeHeadings;
-	goBack?: () => void;
 }
 
-const Office = ({
-	office,
-	goToEditPage,
-	setSelectedOffice,
-	goToOfficePage,
-	heading,
-	goBack,
-}: IOfficeProps) => {
+const Office = ({ office, goToOfficePage }: IOfficeProps) => {
 	const classes = useStyles({});
 
 	const [expanded, setExpanded] = React.useState(false);

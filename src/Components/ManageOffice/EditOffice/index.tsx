@@ -48,19 +48,13 @@ const EditOffice = ({ heading }: IEditOfficeProps) => {
 
 	const officeId = params.id as string;
 
-	const fetchOffices = useLiveQuery(
-		() => DB.offices.toArray(),
-		[],
-	) as IOfficeRead[];
-
 	const [selectedOffice, setFindOffice] = React.useState<IOfficeRead | null>(
 		null,
 	);
 
-	const findOfficeById = async (id: string) => {
-		const getOffice = fetchOffices.find(
-			(office) => office.id === Number(id),
-		);
+	const findOfficeById = async (id: number) => {
+		const getOffice = await DB.offices.get({ id });
+
 		if (getOffice) {
 			setFindOffice(getOffice);
 			reset(getOffice);
@@ -122,15 +116,17 @@ const EditOffice = ({ heading }: IEditOfficeProps) => {
 				toast.success('Office has been updated');
 			}
 		}
+		goBack();
 	};
 
 	React.useEffect(() => {
-		findOfficeById(officeId);
-	}, [JSON.stringify(fetchOffices)]);
+		findOfficeById(Number(officeId));
+	}, [officeId]);
 
 	const deleteOffice = async () => {
 		if (selectedOffice) {
 			await DB.offices.delete(selectedOffice.id);
+			goBack();
 			toast.success('Office has been removed');
 			bulkdDeleteUsers();
 		}

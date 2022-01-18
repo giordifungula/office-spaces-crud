@@ -1,5 +1,6 @@
 import React from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import { useLocation, useNavigate } from 'react-router-dom';
 // @form
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -57,6 +58,9 @@ const AddStaffModal = ({ open, handleClose, office }: IAddStaffModalProps) => {
 		null,
 	);
 
+	const location = useLocation();
+	const locationIncludesAddStaff = location.pathname.includes('add-staff');
+
 	const handleNext = () => {
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
 	};
@@ -74,9 +78,10 @@ const AddStaffModal = ({ open, handleClose, office }: IAddStaffModalProps) => {
 		resolver: yupResolver(schema),
 	});
 
-	const nextPage = (data: IAddStaffForm) => {
+	const nextPage = () => {
 		handleNext();
 	};
+	const navigate = useNavigate();
 
 	const { firstName, lastName } = watch();
 
@@ -89,6 +94,8 @@ const AddStaffModal = ({ open, handleClose, office }: IAddStaffModalProps) => {
 					avatar: selectedAvatar,
 					officeId: office.id,
 				});
+				navigate(`/office/${office.id}`);
+				handleClose();
 				toast.success('Staff member is added');
 			} else {
 				toast.error('Please select a avatar');
@@ -99,7 +106,10 @@ const AddStaffModal = ({ open, handleClose, office }: IAddStaffModalProps) => {
 	return (
 		<div>
 			<Toaster />
-			<Dialog open={open} onClose={handleClose}>
+			<Dialog
+				open={open}
+				onClose={locationIncludesAddStaff ? undefined : handleClose}
+			>
 				<DialogTitle className={classes.noPaddingSides}>
 					<Grid container justifyContent="center" alignItems="center">
 						{activeStep === StaffSection.names ? (

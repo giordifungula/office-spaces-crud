@@ -61,11 +61,6 @@ const ViewOffice = ({ heading }: IOfficePageProps) => {
 		}
 	}, [locationIncludesAddStaff]);
 
-	const fetchOffices = useLiveQuery(
-		() => DB.offices.toArray(),
-		[],
-	) as IOfficeRead[];
-
 	const theme = useTheme();
 	const largerScreen = useMediaQuery(theme.breakpoints.up('lg'));
 	const mediumScreen = useMediaQuery(theme.breakpoints.up('md'));

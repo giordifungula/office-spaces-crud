@@ -73,7 +73,7 @@ const EditStaffModal = ({ open, handleClose, staff }: IEditStaffModalProps) => {
 
 	const { firstName, lastName } = watch();
 
-	const nextPage = (data: IAddStaffForm) => {
+	const nextPage = () => {
 		handleNext();
 	};
 
